@@ -11,6 +11,13 @@
    " ----------------------------------------------------------
 
    set nocompatible                  " needed for many features in plugins
+
+   " Every autocmd below goes in this group so re-sourcing the vimrc
+   " (<leader>sv) replaces them instead of adding duplicates.
+   augroup vimrc
+     autocmd!
+   augroup END
+
    set encoding=utf-8                " set default encoding to utf-8
    set ffs=unix,dos,mac              " set default file type to unix
    set backspace=indent,eol,start    " set backspace to normal
@@ -20,9 +27,9 @@
    set autoread                      " reloads file if outside change detected
    set relativenumber                " show relative line numbers
    set ruler                         " show line number, column, and percentage in toolbar
-   set so=3                          " set 2 lines to the cursor - when moving vertically using j/k
+   set so=3                          " keep 3 lines above/below the cursor when moving vertically using j/k
    set history=500                   " increase history memory
-   set listchars=tab:▸\ ,trail:.,eol:¬,extends:❯,precedes:❮,trail:·
+   set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,trail:·
    set noswapfile
    set nojoinspaces                  " only 1 space after periods during paragraph formatting
    set shell=bash                    " work around vim not reading .zshrc; do ln -s ~/.zshrc ~/.bashrc
@@ -101,17 +108,7 @@
    set nolist           " list disables linebreak
    set textwidth=0      " width of text line
    set wrapmargin=0     " # of characters from the right window border where wrapping starts
-   set cindent          " automatically indents lines after opening a bracket in programming languages
    set autoindent       " if you're indented, new lines will also be indented
-
-
-   " ----------------------------------------------------------
-   "  Searching
-   " ----------------------------------------------------------
-
-   set ignorecase       " Ignore case when searching
-   set smartcase        " When searching try to be smart about cases
-   set incsearch        " Makes search act like search in modern browsers
 
 
    " ----------------------------------------------------------
@@ -141,7 +138,7 @@
    set t_vb=
    set tm=500
 
-   autocmd BufRead,BufNewFile *.md,*.rst
+   autocmd vimrc BufRead,BufNewFile *.md,*.rst
         \ setlocal autoindent expandtab tabstop=8 softtabstop=2 shiftwidth=2
         \ textwidth=78 wrap formatoptions=tcqn
         \ formatlistpat=^\\s*[0-9*]\\+[\\]:.)}\\t\ ]\\s*
@@ -158,26 +155,25 @@
    let mapleader=","
    let maplocalleader = ","
    inoremap kj <Esc>
-   nmap <silent> <C-s> :w <CR>
-   nmap <silent> <M-a>w :set list!<CR>
-   nmap ; :
-   vmap ; :
+   nnoremap <silent> <C-s> :w<CR>
+   nnoremap ; :
+   vnoremap ; :
 
    " disable the q button. I would keep hitting q: instead of q:
    " which would put me in a weird menu
-   nmap q <Nop>
+   nnoremap q <Nop>
 
    " I don't want Ex menu either, whatever that is
-   nmap Q <Nop>
+   nnoremap Q <Nop>
 
    if has('mac')
-     vmap <C-c> "*y:echo "Text has been copied to clipboard"<Cr>
-     vmap <C-x> "*d:echo "Text has been cut"<Cr>
-     imap <C-v> <Esc> "*p
+     vnoremap <C-c> "*y:echo "Text has been copied to clipboard"<Cr>
+     vnoremap <C-x> "*d:echo "Text has been cut"<Cr>
+     inoremap <C-v> <C-r><C-o>*
    elseif has('unix')
-     vmap <C-c> "+y:echo "Text has been copied to clipboard"<Cr>
-     vmap <C-x> "+x:echo "Text has been cut"<Cr>
-     imap <C-v> <C-r><C-p>+
+     vnoremap <C-c> "+y:echo "Text has been copied to clipboard"<Cr>
+     vnoremap <C-x> "+x:echo "Text has been cut"<Cr>
+     inoremap <C-v> <C-r><C-p>+
    endif
    " copy file contents to clipboard without losing cursor position
    nnoremap <Leader>a :%y+<CR>
@@ -185,54 +181,38 @@
    nnoremap <Leader>e :set list!<CR>
 
    " type w!! to save as superuser in case you forget to open vim with sudo
-   cmap w!! w !sudo tee > /dev/null %
+   " (vim only: nvim can't prompt for the sudo password this way)
+   if !has('nvim')
+     cnoremap w!! w !sudo tee > /dev/null %
+   endif
 
    " ----------------------------------------------------------
    "  Scripts
    " ----------------------------------------------------------
 
    " run 'make' scripts
-   autocmd FileType python nnoremap <buffer> <F9> :exec '!python3' shellescape(@%, 1)<cr>
-    autocmd FileType c nnoremap <buffer> <F9> :make<cr>
+   autocmd vimrc FileType python nnoremap <buffer> <F9> :exec '!python3' shellescape(@%, 1)<cr>
+   autocmd vimrc FileType c nnoremap <buffer> <F9> :make<cr>
 
 
    " ----------------------------------------------------------
    "  Opening files
    " ----------------------------------------------------------
 
-    if has('mac') || has('unix')
-        nmap <silent> <leader>ev :tabe ~/.vimrc<CR>
-        nmap <silent> <leader>gev :tabe ~/.gvimrc<CR>
-    endif
-    nmap <silent> <leader>sv :so %<CR>
-    if has('mac') || has('unix')
-      nmap <silent> <leader>es :UltiSnipsEdit<CR>
-    endif
-
-
-    " ----------------------------------------------------------
-    "  Opening files
-    " ----------------------------------------------------------
-
-    autocmd FileType py nmap <silent> <leader>c :w <CR> :! python %<CR>
+    nnoremap <silent> <leader>ev :tabe ~/.vimrc<CR>
+    nnoremap <silent> <leader>gev :tabe ~/.gvimrc<CR>
+    nnoremap <silent> <leader>sv :so %<CR>
 
 
     " ----------------------------------------------------------
     "  Searching
     " ----------------------------------------------------------
 
-    nmap <silent> <leader>q :silent :nohlsearch<CR>
+    nnoremap <silent> <leader>q :silent :nohlsearch<CR>
     " Keep search matches in the middle of the window.
     nnoremap n nzzzv
     nnoremap N Nzzzv
 
-
-    " ----------------------------------------------------------
-    "  Select inside dollar signs for latex
-    " ----------------------------------------------------------
-
-    :onoremap <silent> i$ :<c-u>normal! T$vt$<cr>
-    :vnoremap i$ T$ot$
 
     " ----------------------------------------------------------
     "  Movement
@@ -253,37 +233,20 @@
     "  Add/Delete lines below/above
     " ----------------------------------------------------------
 
-    " Ctrl-j/k deletes blank line below/above, and Alt-j/k inserts.
+    " Ctrl-j/k inserts a blank line below/above without moving the cursor.
     " noremap <silent><A-J> m`:silent +g/\m^\s*$/d<CR>``:noh<CR>
     " noremap <silent><A-K> m`:silent -g/\m^\s*$/d<CR>``:noh<CR>
-    noremap <silent><C-J> :set paste<CR>m`o<Esc>``:set nopaste<CR>
-    noremap <silent><C-K> :set paste<CR>m`O<Esc>``:set nopaste<CR>
-
-    " ----------------------------------------------------------
-    "  Keyboard shortcuts for changing font size quickly
-    " ----------------------------------------------------------
-
-    noremap <C-\> :LargerFont<CR>
-    noremap <A-\> :SmallerFont<CR>
+    nnoremap <silent><C-J> :call append(line('.'), '')<CR>
+    nnoremap <silent><C-K> :call append(line('.') - 1, '')<CR>
 
     " ----------------------------------------------------------
     "  Plugin shortcuts
     " ----------------------------------------------------------
 
-    " Vim Latex shortcuts
-    if has("mac")
-      autocmd FileType tex map <Leader>c :w<CR><Leader>ll<Leader>ls
-      autocmd FileType tex map <Leader>g :w<CR>:call RunLatexOnce()<CR><Leader>ls
-      autocmd FileType tex map <Leader>f :w<CR>:call RunLatexOnce()<CR>
-      " autocmd FileType tex map <Leader>f :w<CR>:call RunLatexOnce()<CR>
-      autocmd FileType tex map <Leader>b :call RunBibtexOnce()<CR>
-    elseif has("unix")
-      autocmd FileType tex map <Leader>c :w<CR><Leader>ll
-      autocmd FileType tex map <Leader>f :call RunLatexOnce()<CR>
-    endif
+    " LaTeX shortcuts are in ~/.vim/ftplugin/tex.vim
 
     " NERDTree shortcuts
-    map <Leader>nt :NERDTreeToggle<CR>:NERDTreeMirror<CR>
+    nnoremap <Leader>nt :NERDTreeToggle<CR>:NERDTreeMirror<CR>
 
     " EasyMotion shortcuts
     map <Space> <Plug>(easymotion-s)
@@ -292,23 +255,6 @@
     " For some reason this maps :CtrlPMRU to the enter key but I like
     " that so this will stay
     " nnoremap <C-m> :CtrlPMRU<CR> " show the most recently used files
-
-    " Surround.vim
-
-    " char2nr is the ascii representation of the character
-    autocmd FileType tex let b:surround_{char2nr('b')} = "\\begin{\1environment: \1} \n\t\r\n\\end{\1\r}.*\r\1}"
-    autocmd FileType tex let b:surround_{char2nr('$')} = "$\r$"
-    autocmd FileType tex let b:surround_{char2nr('e')} = "\\\1command: \1{\r}"
-
-    " Vim-rspec
-    autocmd FileType ruby map <Leader>t :call RunCurrentSpecFile()<CR>
-    autocmd FileType ruby map <Leader>s :call RunNearestSpec()<CR>
-    autocmd FileType ruby map <Leader>l :call RunLastSpec()<CR>
-    autocmd FileType ruby map <Leader>a :call RunAllSpecs()<CR>
-
-    " LaTeX-Box
-    "
-
 
 " }}}
 " Bundle calls {{{
@@ -378,83 +324,6 @@
 " ==============================================================
 
      " ----------------------------------------------------------
-     "  Latex-suite
-     " ----------------------------------------------------------
-
-     " Note about inverse searching : make sure the file mvim, which ships with macvim, is moved to
-     " /usr/local/bin, Also remember to use the pdfsync package
-
-     let g:tex_flavor= "pdflatex"
-     let g:Tex_DefaultTargetFormat = "pdf"
-     let g:Tex_MultipleCompileFormats = "pdf"
-     " let g:Tex_DefaultTargetFormat = "dvi"
-     " let g:Tex_MultipleCompileFormats = "dvi"
-     let Tex_FoldedSections=""
-     let Tex_FoldedEnvironments=""
-     let Tex_FoldedMisc=""
-
-     " Synctex settings: http://mactex-wiki.tug.org/wiki/index.php/SyncTex
-     if has('mac')
-         let $PATH=$PATH . ':/usr/texbin'
-         let g:Tex_ViewRule_pdf = "Skim"
-         let g:Tex_ViewRule_dvi = "xdvi"
-         let g:Tex_CompileRule_pdf = 'pdflatex -synctex=1 -interaction=nonstopmode -file-line-error-style  $*'
-         let g:Tex_CompileRule_pdf = 'xelatex -synctex=1 -interaction=nonstopmode -file-line-error-style  $*'
-         let g:Tex_CompileRule_dvi = 'latex -src-specials -interaction=nonstopmode $*'
-         " set macmeta " Allows us to use the meta (option / alt) key on Mac OSX
-     elseif has('unix')
-         " let g:Tex_ViewRule_pdf = "evince"
-         let g:Tex_ViewRule_pdf = "okular --unique"
-         " let g:Tex_CompileRule_pdf = 'pdflatex -synctex=1 -src-specials -interaction=nonstopmode -file-line-error-style $*'
-         let g:Tex_CompileRule_pdf = 'xelatex -synctex=1 -interaction=nonstopmode -file-line-error-style  $*'
-
-         function! SyncTexForward()
-             let s:syncfile = fnamemodify(fnameescape(Tex_GetMainFileName()), ":r").".pdf"
-             " let execstr = "silent !evince --unique ".s:syncfile."\\#src:".line(".").expand("%\:p").' &'
-             let execstr = "silent !okular --unique ".s:syncfile."\\#src:".line(".").expand("%\:p").' &'
-             exec execstr
-         endfunction
-         nnoremap <Leader>s :call SyncTexForward()<CR>
-     endif
-     "
-     " " Note - In order to set up inverse search in Okular go to Settings
-     " " > Okular settings > Editor. Then choose 'Custom Text Editor' in
-     " " the dropdown and then use the command:
-     " " 'gvim --servername GVIM --remote +%l %f'
-     "
-     " " let g:Tex_Leader = '/'
-     "
-     " let g:Tex_IgnoredWarnings ='
-     " \"LaTeX Font Warning\n"'
-     "     \"Underfull\n".
-     "     \"Overfull\n".
-     "     \"specifier changed to\n".
-     "     \"You have requested\n".
-     "     \"Missing number, treated as zero.\n".
-     "     \"There were undefined references\n".
-     "     \"Citation %.%# undefined\n".
-     "     \"\oval, \circle, or \line size unavailable\n"'
-
-     " ----------------------------------------------------------
-     "  LaTeX-Box
-     " ----------------------------------------------------------
-
-     let g:tex_flavor= "pdflatex"
-     let g:vimtex_latexmk_continuous = 0
-     let g:LatexBox_show_warnings = 0
-     " calling okular from the command line from vim causes a bunch of
-     " bad output to mess up the vim window
-     function! SyncTexForward()
-       let s:syncfile = LatexBox_GetOutputFile()"
-       " let execstr = "silent !evince --unique ".s:syncfile."\\#src:".line(".").expand("%\:p").' >/dev/null 2>&1 &'
-       let execstr = "silent !okular --unique ".s:syncfile."\\#src:".line(".").expand("%\:p").' &'
-       " exec execstr
-       echo execstr
-     endfunction
-     nnoremap <Leader>ls :call SyncTexForward()<CR>
-
-
-     " ----------------------------------------------------------
      "  UltiSnips
      " ----------------------------------------------------------
 
@@ -480,7 +349,7 @@
      let NERDTreeShowHidden=1
      let NERDTreeKeepTreeInNewTab=1
      let NERDTreeShowLineNumbers=1      " enable line numbers
-     autocmd FileType nerdtree setlocal relativenumber " make sure relative line numbers are used
+     autocmd vimrc FileType nerdtree setlocal relativenumber " make sure relative line numbers are used
 
 
      " ----------------------------------------------------------
@@ -516,17 +385,14 @@
      let g:airline_left_alt_sep = '|' " used to be 
      let g:airline_right_sep = ''     " used to be 
      let g:airline_right_alt_sep = '' " used to be 
-     if exists('g:airline_symbols')
-       if has('mac')
-         let g:airline_symbols.branch = ''
-         let g:airline_symbols.readonly = ''
-         let g:airline_symbols.linenr = ''
-         let g:airline_symbols.linenr = ''
-         let g:airline_symbols.maxlinenr = ''
-       endif
-     endif
      if !exists('g:airline_symbols')
        let g:airline_symbols = {}
+     endif
+     if has('mac')
+         let g:airline_symbols.branch = ''
+         let g:airline_symbols.readonly = ''
+         let g:airline_symbols.linenr = ''
+         let g:airline_symbols.maxlinenr = ''
      endif
 
      "
@@ -554,41 +420,11 @@
 
 
      " ----------------------------------------------------------
-     "  vim-rspec.vim
-     " ----------------------------------------------------------
-
-     let g:rspec_runner = "os_x_iterm"
-
-
-     " ----------------------------------------------------------
      "  vim-markdown.vim
      " ----------------------------------------------------------
 
      let g:vim_markdown_folding_disabled = 1
 
-
-     " ----------------------------------------------------------
-     "  vimtex.vim
-     " ----------------------------------------------------------
-
-     " let g:vimtex_quickfix_latexlog = {'default' : 0}
-     " let g:vimtex_quickfix_latexlog = {
-     "    \ 'default' : 0,
-     "    \ 'general' : 0,
-     "    \ 'overfull' : 0,
-     "    \ 'underfull' : 0,
-     "    \ 'font' : 0,
-     "    \ 'packages' : {
-     "    \   'default' : 0,
-     "    \   'natbib' : 0,
-     "    \   'biblatex' : 0,
-     "    \   'babel' : 0,
-     "    \   'hyperref' : 0,
-     "    \   'scrreprt' : 0,
-     "    \   'fixltx2e' : 0,
-     "    \   'titlesec' : 0,
-     "    \ },
-     "    \}
 
 " }}}
 " Custom functions {{{
@@ -608,7 +444,7 @@
 
 
   " ----------------------------------------------------------
-  "  Delete trailing white space on sace
+  "  Delete trailing white space on save
   " ----------------------------------------------------------
 
   " Improved whitespace function taken from
@@ -628,57 +464,11 @@
       call cursor(l, c)
   endfun
 
-  autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+  autocmd vimrc BufWritePre * :call <SID>StripTrailingWhitespaces()
   nnoremap <Leader>rtw :call <SID>StripTrailingWhitespaces()<CR>
 
   " autocmd FileType markdown,ruby,perl let b:noStripWhitespace=1
-  autocmd FileType markdown,diff let b:noStripWhitespace=1
-
-  " ----------------------------------------------------------
-  "  Run latex once
-  " ----------------------------------------------------------
-
-  function! RunLatexOnce()
-    let s:syncfile = fnamemodify(fnameescape(Tex_GetMainFileName()), ":r").".tex"
-    exec "silent ! pdflatex -synctex=1 -interaction=nonstopmode -file-line-error-style  $* ".s:syncfile
-  endfunction
-
-  " this doesn't seem to be working right now
-  function! RunBibtexOnce()
-    let s:syncfile = fnamemodify(fnameescape(Tex_GetMainFileName()), ":r")
-    exec "silent ! bibtex ".s:syncfile
-  endfunction
-
-  " ----------------------------------------------------------
-  " Change font size quickly
-  " ----------------------------------------------------------
-
-  let s:pattern = '^\(.* \)\([1-9][0-9]*\)$'
-  let s:minfontsize = 6
-  let s:maxfontsize = 16
-  function! AdjustFontSize(amount)
-    if has("gui_gtk2") && has("gui_running")
-      let fontname = substitute(&guifont, s:pattern, '\1', '')
-      let cursize = substitute(&guifont, s:pattern, '\2', '')
-      let newsize = cursize + a:amount
-      if (newsize >= s:minfontsize) && (newsize <= s:maxfontsize)
-    " " let newfont = fontname . newsize
-    " " let &guifont = newfont
-      endif
-    else
-      echoerr "You need to run the GTK2 version of Vim to use this function."
-    endif
-  endfunction
-
-  function! LargerFont()
-    call AdjustFontSize(1)
-  endfunction
-  command! LargerFont call LargerFont()
-
-  function! SmallerFont()
-    call AdjustFontSize(-1)
-  endfunction
-  command! SmallerFont call SmallerFont()
+  autocmd vimrc FileType markdown,diff let b:noStripWhitespace=1
 
 
 " }}}
@@ -687,16 +477,15 @@
 
   " Filetype specific settings are in ~/.vim/ftplugin/'filetype'
   " Associate .adoc files with asciidoc file type
-  " Associate .md files with markdown file type
-  au BufNewFile,BufRead *.adoc setlocal ft=asciidoc
-  au BufNewFile,BufRead *.md setlocal ft=markdown
-  au BufNewFile,BufRead *.md setlocal foldlevel=99
-  autocmd BufNewFile,BufRead *.jinja2,*.j2,*.jinja,*.jinja2.html set ft=jinja
+  " (vim already detects .md files as markdown)
+  autocmd vimrc BufNewFile,BufRead *.adoc setlocal ft=asciidoc
+  autocmd vimrc BufNewFile,BufRead *.md setlocal foldlevel=99
+  autocmd vimrc BufNewFile,BufRead *.jinja2,*.j2,*.jinja,*.jinja2.html setlocal ft=jinja
 
   let g:go_version_warning = 0
 
 " }}}
 " Postamble {{{
 " ==============================================================
-    syntax on                         needs to be last for file coloring to work
+    syntax on                         " needs to be last for file coloring to work
 " }}}
