@@ -5,6 +5,7 @@ vimrc with [vim-plug](https://github.com/junegunn/vim-plug), and neovim
 uses a Lua config with [lazy.nvim](https://github.com/folke/lazy.nvim)
 and nvim-native plugins (telescope, nvim-tree, treesitter, LSP via
 mason, blink.cmp completion, conform format-on-save, which-key,
+noice,
 lualine, gitsigns, flash, vimtex). Keymaps are shared between
 the two where possible, with `,` as leader.
 
@@ -40,7 +41,7 @@ Layout of `nvim/.config/nvim/`:
 |---|---|
 | `init.lua` | Entry point: leader, config modules, colorscheme |
 | `lua/config/` | Options, keymaps and autocmds (ported from the vimrc), lazy.nvim bootstrap |
-| `lua/plugins/ui.lua` | Colorschemes (onedark is the default; tokyonight, catppuccin, kanagawa to compare), lualine, which-key |
+| `lua/plugins/ui.lua` | Colorschemes (onedark is the default; tokyonight, catppuccin, kanagawa to compare), lualine (bubbles layout), which-key, noice |
 | `lua/plugins/files.lua` | telescope, nvim-tree |
 | `lua/plugins/completion.lua` | blink.cmp autocompletion with friendly-snippets |
 | `lua/plugins/formatting.lua` | conform.nvim format on save |
@@ -63,4 +64,5 @@ popup listing the rest):
 | `K`, `grn`, `gra`, `grr`, `[d` `]d` | LSP hover, rename, code action, references, diagnostics |
 | `,cf` | Format buffer (also runs on save) |
 | `,ll` / `,lv` | Compile / view LaTeX (vimtex) |
+| `:Noice` / `:Noice dismiss` | Message history / clear notifications |
 | `,ev` | Edit `init.lua` |
