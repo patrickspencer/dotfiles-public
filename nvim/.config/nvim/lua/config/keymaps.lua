@@ -36,5 +36,9 @@ map("", "<C-h>", "gT")
 map("", "<C-l>", "gt")
 
 -- Ctrl-j/k inserts a blank line below/above without moving the cursor.
-map("n", "<C-j>", function() vim.fn.append(vim.fn.line("."), "") end, { silent = true })
-map("n", "<C-k>", function() vim.fn.append(vim.fn.line(".") - 1, "") end, { silent = true })
+map("n", "<C-j>", function()
+  vim.fn.append(vim.fn.line("."), "")
+end, { silent = true })
+map("n", "<C-k>", function()
+  vim.fn.append(vim.fn.line(".") - 1, "")
+end, { silent = true })

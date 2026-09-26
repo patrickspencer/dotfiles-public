@@ -1,6 +1,20 @@
 local parsers = {
-  "bash", "c", "css", "go", "html", "jinja", "json", "lua", "markdown",
-  "markdown_inline", "python", "query", "ruby", "vim", "vimdoc", "yaml",
+  "bash",
+  "c",
+  "css",
+  "go",
+  "html",
+  "jinja",
+  "json",
+  "lua",
+  "markdown",
+  "markdown_inline",
+  "python",
+  "query",
+  "ruby",
+  "vim",
+  "vimdoc",
+  "yaml",
 }
 
 return {

@@ -12,11 +12,23 @@ return {
       "neovim/nvim-lspconfig",
     },
     opts = {
-      ensure_installed = { "lua_ls", "pyright", "gopls" },
+      ensure_installed = { "lua_ls", "pyright", "gopls", "clangd", "texlab" },
     },
     config = function(_, opts)
       vim.diagnostic.config({ virtual_text = true, severity_sort = true })
       require("mason-lspconfig").setup(opts)
+
+      -- Formatters used by conform (lua/plugins/formatting.lua). mason puts
+      -- them on nvim's PATH. gofmt comes with Go itself.
+      local registry = require("mason-registry")
+      registry.refresh(function()
+        for _, name in ipairs({ "stylua", "ruff", "prettier" }) do
+          local ok, pkg = pcall(registry.get_package, name)
+          if ok and not pkg:is_installed() then
+            pkg:install()
+          end
+        end
+      end)
     end,
   },
 

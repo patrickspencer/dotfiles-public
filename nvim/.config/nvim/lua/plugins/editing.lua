@@ -11,7 +11,14 @@ return {
     "folke/flash.nvim",
     opts = { modes = { search = { enabled = false }, char = { enabled = false } } },
     keys = {
-      { "<Space>", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash jump" },
+      {
+        "<Space>",
+        mode = { "n", "x", "o" },
+        function()
+          require("flash").jump()
+        end,
+        desc = "Flash jump",
+      },
     },
   },
 

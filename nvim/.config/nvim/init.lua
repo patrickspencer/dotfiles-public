@@ -13,4 +13,4 @@ require("config.keymaps")
 require("config.autocmds")
 require("config.lazy")
 
-vim.cmd.colorscheme("peaksea")
+vim.cmd.colorscheme("tokyonight-storm")

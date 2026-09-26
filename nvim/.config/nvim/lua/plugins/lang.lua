@@ -18,7 +18,7 @@ return {
     init = function()
       vim.g.go_gopls_enabled = 0
       vim.g.go_def_mapping_enabled = 0
-      vim.g.go_fmt_command = "gofmt"
+      vim.g.go_fmt_autosave = 0 -- conform formats on save
       vim.g.go_version_warning = 0
     end,
   },

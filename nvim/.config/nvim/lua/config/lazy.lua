@@ -19,5 +19,5 @@ require("lazy").setup({
   spec = { { import = "plugins" } },
   install = { colorscheme = { "peaksea" } },
   change_detection = { notify = false },
-  rocks = { enabled = false },           -- no plugin here needs luarocks
+  rocks = { enabled = false }, -- no plugin here needs luarocks
 })

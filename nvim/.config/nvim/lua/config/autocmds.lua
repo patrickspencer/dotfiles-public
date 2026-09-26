@@ -31,7 +31,16 @@ autocmd("FileType", {
 })
 autocmd("FileType", {
   pattern = "c",
-  callback = function() vim.keymap.set("n", "<F9>", "<cmd>make<CR>", { buffer = true }) end,
+  callback = function()
+    vim.keymap.set("n", "<F9>", "<cmd>make<CR>", { buffer = true })
+  end,
+})
+
+-- Briefly highlight yanked text
+autocmd("TextYankPost", {
+  callback = function()
+    vim.hl.on_yank()
+  end,
 })
 
 -- Return to the same line when you reopen a file
@@ -59,7 +68,9 @@ autocmd("BufWritePre", { callback = strip_trailing_whitespace })
 vim.keymap.set("n", "<Leader>rtw", strip_trailing_whitespace, { desc = "Strip trailing whitespace" })
 autocmd("FileType", {
   pattern = { "markdown", "diff" },
-  callback = function() vim.b.noStripWhitespace = true end,
+  callback = function()
+    vim.b.noStripWhitespace = true
+  end,
 })
 
 -- File type associations
