@@ -5,7 +5,8 @@ vimrc with [vim-plug](https://github.com/junegunn/vim-plug), and neovim
 uses a Lua config with [lazy.nvim](https://github.com/folke/lazy.nvim)
 and nvim-native plugins (telescope, nvim-tree, treesitter, LSP via
 mason, blink.cmp completion, conform format-on-save, which-key,
-noice,
+noice, snacks (start screen, lazygit, indent guides), trouble,
+todo-comments, treesitter text objects, mini.icons,
 lualine, gitsigns, flash, vimtex). Keymaps are shared between
 the two where possible, with `,` as leader.
 
@@ -41,15 +42,16 @@ Layout of `nvim/.config/nvim/`:
 |---|---|
 | `init.lua` | Entry point: leader, config modules, colorscheme |
 | `lua/config/` | Options, keymaps and autocmds (ported from the vimrc), lazy.nvim bootstrap |
-| `lua/plugins/ui.lua` | Colorschemes (onedark is the default; tokyonight, catppuccin, kanagawa to compare), lualine (bubbles layout), which-key, noice |
+| `lua/plugins/ui.lua` | Colorschemes (onedark is the default; tokyonight, catppuccin, kanagawa to compare), lualine (bubbles layout), which-key, noice, mini.icons, snacks |
 | `lua/plugins/files.lua` | telescope, nvim-tree |
 | `lua/plugins/completion.lua` | blink.cmp autocompletion with friendly-snippets |
 | `lua/plugins/formatting.lua` | conform.nvim format on save |
 | `lua/plugins/lsp.lua` | mason, nvim-lspconfig, lazydev |
-| `lua/plugins/syntax.lua` | treesitter |
+| `lua/plugins/syntax.lua` | treesitter, treesitter text objects |
 | `lua/plugins/editing.lua` | autopairs, surround, flash, endwise |
 | `lua/plugins/git.lua` | gitsigns, fugitive |
 | `lua/plugins/lang.lua` | vimtex, vim-go |
+| `lua/plugins/tools.lua` | trouble, todo-comments |
 | `after/ftplugin/` | Per-filetype indent and wrap settings |
 
 Keys worth knowing (leader is `,`; press it and wait for a which-key
@@ -57,9 +59,15 @@ popup listing the rest):
 
 | Key | Action |
 |---|---|
-| `<C-p>` / `,ff` / `,fg` / `,fb` | Recent files / find files / grep / buffers |
+| `<C-p>` / `,ff` / `,fg` / `,fb` | Recent files / find files / grep / buffers (files open in a new tab, or in place from the start screen) |
 | `,nt` | File tree |
 | `<Space>` | Jump anywhere on screen (flash) |
+| `vaf` `cif` `dac` `yia` | Select / change / delete / yank a function, class or argument |
+| `]f` `[f` | Next / previous function |
+| `]]` `[[` | Next / previous use of the word under the cursor |
+| `,gg` | lazygit in a floating window |
+| `,xx` / `,xX` / `,xr` | Diagnostics for the project / buffer, LSP references (trouble) |
+| `,ft` / `]t` `[t` | Find TODO comments / jump between them |
 | `<C-n>` `<C-p>` `<C-y>` | Select / accept completion |
 | `K`, `grn`, `gra`, `grr`, `[d` `]d` | LSP hover, rename, code action, references, diagnostics |
 | `,cf` | Format buffer (also runs on save) |
