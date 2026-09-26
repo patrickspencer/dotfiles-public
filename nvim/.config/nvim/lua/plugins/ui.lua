@@ -115,6 +115,7 @@ return {
           ["vim.lsp.util.stylize_markdown"] = true,
         },
         signature = { enabled = false },
+        progress = { enabled = false }, -- no language server progress bar
       },
       presets = {
         bottom_search = true, -- / and ? stay at the bottom
