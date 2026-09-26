@@ -261,62 +261,57 @@
 " ==============================================================
 
   " ----------------------------------------------------------
-  "  Initiate the Vundle package manager
+  "  Initiate the vim-plug package manager
   " ----------------------------------------------------------
 
-     filetype off " required!
-
-     if has("mac")
-       set rtp+=~/.vim/bundle/Vundle.vim
-     elseif has("unix")
-       set rtp+=~/.vim/bundle/Vundle.vim
-     elseif has("win32")
-       set rtp+=C:/Program\ Files/Vim/vimfiles/bundle/Vundle.vim/
+     " Install vim-plug on first run
+     let s:plug = expand('~/.vim/autoload/plug.vim')
+     if empty(glob(s:plug))
+       silent execute '!curl -fsLo ' . s:plug . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+       autocmd vimrc VimEnter * PlugInstall --sync | source $MYVIMRC
      endif
-     call vundle#begin()
+
+     " plug#end() turns filetype detection and syntax back on
+     call plug#begin('~/.vim/plugged')
 
 
      " ----------------------------------------------------------
      "  Plugins list
      " ----------------------------------------------------------
 
-     Plugin 'VundleVim/Vundle.vim'
-     Plugin 'jcf/vim-latex'
-     Plugin 'scrooloose/nerdtree'
-     Plugin 'airblade/vim-gitgutter'
-     Plugin 'kshenoy/vim-signature'
-     Plugin 'francoiscabrol/ranger.vim'
-     Plugin 'honza/vim-snippets'
-     Plugin 'Raimondi/delimitMate'
-     Plugin 'tomtom/tcomment_vim'
-     Plugin 'easymotion/vim-easymotion'
-     Plugin 'godlygeek/tabular'  " needed for vim-markdown below
-     Plugin 'plasticboy/vim-markdown'
-     Plugin 'nelstrom/vim-markdown-folding'
-     Plugin 'kien/ctrlp.vim'
-     Plugin 'tpope/vim-surround'
-     Plugin 'tpope/vim-fugitive'
-     Plugin 'tpope/vim-endwise'
-     Plugin 'Glench/Vim-Jinja2-Syntax'
-     Plugin 'chase/vim-ansible-yaml'
-     Plugin 'duff/vim-bufonly'
-     Plugin 'fatih/vim-go'
-     Plugin 'flazz/vim-colorschemes'
-     Plugin 'dense-analysis/ale'
-     Plugin 'bling/vim-airline'
-     Plugin 'vim-airline/vim-airline-themes'
-     " Plugin 'SirVer/ultisnips'
-     " Plugin 'mattn/emmet-vim'
-     " Plugin 'thoughtbot/vim-rspec'
-     " Plugin 'tpope/vim-rails'
-     " Plugin 'tpope/vim-rvm'
-     " Plugin 'tpope/vim-unimpaired'
-     " Plugicolorscheme wombatn 'dagwieers/asciidoc-vim'
-     " Plugin 'pearofducks/ansible-vim'
-     " Plugin 'LaTeX-Box-Team/LaTeX-Box'
-     " Plugin 'lervag/vimtex'
+     Plug 'vim-latex/vim-latex'
+     Plug 'preservim/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeMirror'] }
+     Plug 'airblade/vim-gitgutter'
+     Plug 'kshenoy/vim-signature'
+     Plug 'francoiscabrol/ranger.vim'
+     Plug 'honza/vim-snippets'
+     Plug 'Raimondi/delimitMate'
+     Plug 'tomtom/tcomment_vim'
+     Plug 'easymotion/vim-easymotion'
+     Plug 'godlygeek/tabular'  " needed for vim-markdown below
+     Plug 'preservim/vim-markdown'
+     Plug 'nelstrom/vim-markdown-folding'
+     Plug 'ctrlpvim/ctrlp.vim'
+     Plug 'tpope/vim-surround'
+     Plug 'tpope/vim-fugitive'
+     Plug 'tpope/vim-endwise'
+     Plug 'Glench/Vim-Jinja2-Syntax'
+     Plug 'pearofducks/ansible-vim'
+     Plug 'duff/vim-bufonly'
+     Plug 'fatih/vim-go', { 'for': 'go' }
+     Plug 'flazz/vim-colorschemes'
+     Plug 'dense-analysis/ale'
+     Plug 'vim-airline/vim-airline'
+     Plug 'vim-airline/vim-airline-themes'
+     " Plug 'SirVer/ultisnips'
+     " Plug 'mattn/emmet-vim'
+     " Plug 'thoughtbot/vim-rspec'
+     " Plug 'tpope/vim-rails'
+     " Plug 'tpope/vim-rvm'
+     " Plug 'tpope/vim-unimpaired'
+     " Plug 'lervag/vimtex'
 
-     call vundle#end()
+     call plug#end()
 
 
 "}}}
