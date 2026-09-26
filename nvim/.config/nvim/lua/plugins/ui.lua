@@ -1,6 +1,8 @@
 return {
   -- Colorschemes to compare with :Telescope colorscheme enable_preview=true.
   -- The active one is set at the bottom of init.lua.
+  -- onedark "dark" uses the same #282c34 background as Ghostty's default
+  { "navarasu/onedark.nvim", lazy = false, priority = 1000, opts = { style = "dark" } },
   { "folke/tokyonight.nvim", lazy = false, priority = 1000 },
   { "catppuccin/nvim", name = "catppuccin", lazy = false, priority = 1000 },
   { "rebelot/kanagawa.nvim", lazy = false, priority = 1000 },
