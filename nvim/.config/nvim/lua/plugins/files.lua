@@ -18,14 +18,29 @@ return {
     },
     config = function()
       local telescope = require("telescope")
+      local actions = require("telescope.actions")
+
+      -- Open files in a new tab, like ctrlp_open_new_file = 't'. From the
+      -- start screen or an empty buffer, open in place instead, so no
+      -- leftover "[Scratch]" tab is left behind.
+      local function open_in_tab(prompt_bufnr)
+        local win = require("telescope.actions.state").get_current_picker(prompt_bufnr).original_win_id
+        local buf = vim.api.nvim_win_get_buf(win)
+        local empty = vim.api.nvim_buf_get_name(buf) == "" and not vim.bo[buf].modified
+        if vim.bo[buf].filetype == "snacks_dashboard" or empty then
+          actions.select_default(prompt_bufnr)
+        else
+          actions.select_tab(prompt_bufnr)
+        end
+      end
+
       telescope.setup({
         defaults = {
           file_ignore_patterns = { "%.git/", "%.hg/", "%.svn/", "%.DS_Store" },
         },
         pickers = {
-          -- open files in a new tab, like ctrlp_open_new_file = 't'
-          oldfiles = { mappings = { i = { ["<CR>"] = "select_tab" } } },
-          find_files = { hidden = true, mappings = { i = { ["<CR>"] = "select_tab" } } },
+          oldfiles = { mappings = { i = { ["<CR>"] = open_in_tab } } },
+          find_files = { hidden = true, mappings = { i = { ["<CR>"] = open_in_tab } } },
         },
       })
       telescope.load_extension("fzf")
@@ -41,7 +56,6 @@ return {
     opts = {
       sync_root_with_cwd = true,
       view = { number = true, relativenumber = true },
-      renderer = { icons = { show = { file = false, folder = false, folder_arrow = true, git = true } } },
       filters = {
         dotfiles = false,
         custom = {

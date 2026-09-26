@@ -7,6 +7,60 @@ return {
   { "catppuccin/nvim", name = "catppuccin", lazy = false, priority = 1000 },
   { "rebelot/kanagawa.nvim", lazy = false, priority = 1000 },
 
+  -- File-type icons. Ghostty has the Nerd Font symbols built in. mini.icons
+  -- also stands in for nvim-web-devicons, which nvim-tree, telescope and
+  -- lualine look for.
+  {
+    "nvim-mini/mini.icons",
+    lazy = true,
+    opts = {},
+    init = function()
+      package.preload["nvim-web-devicons"] = function()
+        require("mini.icons").mock_nvim_web_devicons()
+        return package.loaded["nvim-web-devicons"]
+      end
+    end,
+  },
+
+  -- snacks.nvim: lazygit float, indent guides, start screen, and underlines
+  -- other uses of the word under the cursor (]] / [[ jump between them).
+  {
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      dashboard = { enabled = true },
+      indent = { enabled = true },
+      lazygit = { enabled = true },
+      words = { enabled = true },
+    },
+    keys = {
+      {
+        "<Leader>gg",
+        function()
+          Snacks.lazygit()
+        end,
+        desc = "Lazygit",
+      },
+      {
+        "]]",
+        function()
+          Snacks.words.jump(vim.v.count1)
+        end,
+        mode = { "n", "t" },
+        desc = "Next reference",
+      },
+      {
+        "[[",
+        function()
+          Snacks.words.jump(-vim.v.count1)
+        end,
+        mode = { "n", "t" },
+        desc = "Previous reference",
+      },
+    },
+  },
+
   -- Status line (replaces vim-airline). "Bubbles" layout from lualine's
   -- examples: rounded powerline caps ( ), colors follow the colorscheme.
   {
@@ -80,6 +134,7 @@ return {
         { "<Leader>f", group = "find" },
         { "<Leader>g", group = "git" },
         { "<Leader>l", group = "latex" },
+        { "<Leader>x", group = "diagnostics" },
       },
     },
   },
